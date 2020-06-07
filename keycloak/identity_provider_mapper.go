@@ -1,12 +1,13 @@
 package keycloak
 
 import (
-	"encoding/json"
 	"fmt"
+	"strings"
+
+	"encoding/json"
 	"log"
 	"reflect"
 	"strconv"
-	"strings"
 )
 
 type IdentityProviderMapperConfig struct {
