@@ -5,6 +5,7 @@
 
 trigger:
 - master
+- features/usersession-note-protocol-mapper-fix
 
 pool:
   vmImage: 'ubuntu-latest'
