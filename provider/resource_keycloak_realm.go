@@ -424,6 +424,12 @@ func resourceKeycloakRealm() *schema.Resource {
 				Type:     schema.TypeMap,
 				Optional: true,
 			},
+			"default_roles": {
+				Type:     schema.TypeSet,
+				Elem:     &schema.Schema{Type: schema.TypeString},
+				Set:      schema.HashString,
+				Required: false,
+			},
 		},
 	}
 }
@@ -703,6 +709,20 @@ func getRealmFromData(data *schema.ResourceData) (*keycloak.Realm, error) {
 		realm.DockerAuthenticationFlow = flow.(string)
 	}
 
+	defaultRoles := make([]string, 0)
+	if v, ok := data.GetOk("default_roles"); ok {
+		defaultRoles = v.([]string)
+	}
+
+	// defaultRoles := make([]string, 0)
+	// if v, ok := data.GetOk("default_roles"); ok {
+	// 	for _, defaultRole := range v.(*schema.Set).List() {
+	// 		defaultRoles = append(defaultRoles, defaultRole.(string))
+	// 	}
+	// }
+
+	realm.DefaultRoles = defaultRoles
+
 	attributes := map[string]interface{}{}
 	if v, ok := data.GetOk("attributes"); ok {
 		for key, value := range v.(map[string]interface{}) {
@@ -856,6 +876,8 @@ func setRealmData(data *schema.ResourceData, realm *keycloak.Realm) {
 		}
 	}
 	data.Set("attributes", attributes)
+
+	data.Set("default_roles", realm.DefaultRoles)
 }
 
 func getBruteForceDetectionSettings(realm *keycloak.Realm) map[string]interface{} {
