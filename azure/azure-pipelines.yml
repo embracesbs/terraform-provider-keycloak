@@ -5,13 +5,14 @@
 
 trigger:
 - master
+- features/usersession-note-protocol-mapper-fix
 
 pool:
   vmImage: 'ubuntu-latest'
 
 steps:
 - task: Bash@3
-  displayName: Build  
+  displayName: Build 
   inputs:
     targetType: 'inline'
     script: | 

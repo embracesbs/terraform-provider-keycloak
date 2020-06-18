@@ -89,6 +89,7 @@ func mapFromDataToOpenIdUserSessionNoteProtocolMapper(data *schema.ResourceData)
 
 		ClaimName:            data.Get("claim_name").(string),
 		ClaimValueType:       data.Get("claim_value_type").(string),
+		UserSessionNote:      data.Get("session_note_label").(string),
 		UserSessionNoteLabel: data.Get("session_note_label").(string),
 	}
 }
@@ -108,7 +109,7 @@ func mapFromOpenIdUserSessionNoteMapperToData(mapper *keycloak.OpenIdUserSession
 	data.Set("add_to_access_token", mapper.AddToAccessToken)
 	data.Set("claim_name", mapper.ClaimName)
 	data.Set("claim_value_type", mapper.ClaimValueType)
-	data.Set("session_note_label", mapper.UserSessionNoteLabel)
+	data.Set("session_note_label", mapper.UserSessionNote)
 }
 
 func resourceKeycloakOpenIdUserSessionNoteProtocolMapperCreate(data *schema.ResourceData, meta interface{}) error {
