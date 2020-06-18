@@ -709,19 +709,9 @@ func getRealmFromData(data *schema.ResourceData) (*keycloak.Realm, error) {
 		realm.DockerAuthenticationFlow = flow.(string)
 	}
 
-	defaultRoles := make([]string, 0)
-	if v, ok := data.GetOk("default_roles"); ok {
-		defaultRoles = v.([]string)
+	if defRoles, ok := data.GetOk("default_roles"); ok {
+		realm.DefaultRoles = defRoles.([]string)
 	}
-
-	// defaultRoles := make([]string, 0)
-	// if v, ok := data.GetOk("default_roles"); ok {
-	// 	for _, defaultRole := range v.(*schema.Set).List() {
-	// 		defaultRoles = append(defaultRoles, defaultRole.(string))
-	// 	}
-	// }
-
-	realm.DefaultRoles = defaultRoles
 
 	attributes := map[string]interface{}{}
 	if v, ok := data.GetOk("attributes"); ok {
