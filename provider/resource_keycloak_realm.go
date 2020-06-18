@@ -428,7 +428,7 @@ func resourceKeycloakRealm() *schema.Resource {
 				Type:     schema.TypeSet,
 				Elem:     &schema.Schema{Type: schema.TypeString},
 				Set:      schema.HashString,
-				Required: false,
+				Optional: true,
 			},
 		},
 	}
