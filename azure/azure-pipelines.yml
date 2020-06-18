@@ -12,7 +12,7 @@ pool:
 
 steps:
 - task: Bash@3
-  displayName: Build  
+  displayName: Build 
   inputs:
     targetType: 'inline'
     script: | 
