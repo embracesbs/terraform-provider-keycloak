@@ -84,6 +84,9 @@ type Realm struct {
 
 	PasswordPolicy string `json:"passwordPolicy"`
 
+	// default roles
+	DefaultRoles []string `json:"defaultRoles"`
+
 	//flow bindings
 	BrowserFlow              string `json:"browserFlow,omitempty"`
 	RegistrationFlow         string `json:"registrationFlow,omitempty"`
