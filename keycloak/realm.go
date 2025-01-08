@@ -3,7 +3,7 @@ package keycloak
 import (
 	"context"
 	"fmt"
-	"github.com/mrparkers/terraform-provider-keycloak/keycloak/types"
+	"github.com/keycloak/terraform-provider-keycloak/keycloak/types"
 	"strings"
 )
 
@@ -150,6 +150,7 @@ type BrowserSecurityHeaders struct {
 	XFrameOptions                   string `json:"xFrameOptions"`
 	XRobotsTag                      string `json:"xRobotsTag"`
 	XXSSProtection                  string `json:"xXSSProtection"`
+	ReferrerPolicy                  string `json:"referrerPolicy"`
 }
 
 type SmtpServer struct {

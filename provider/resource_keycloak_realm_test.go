@@ -5,7 +5,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/acctest"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
-	"github.com/mrparkers/terraform-provider-keycloak/keycloak"
+	"github.com/keycloak/terraform-provider-keycloak/keycloak"
 	"regexp"
 	"testing"
 )
@@ -1640,6 +1640,7 @@ resource "keycloak_realm" "realm" {
 			x_robots_tag = "none"
 			x_xss_protection = "1; mode=block"
 			strict_transport_security = "max-age=31536000; includeSubDomains"
+			referrer_policy = "origin"
 		}
 		brute_force_detection {
             permanent_lockout                 = false

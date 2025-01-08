@@ -1,3 +1,56 @@
+## 4.5.1 ()
+
+FEATURES:
+
+- unit tests are now working with 26. ([#9](https://github.com/qvest-digital/terraform-provider-keycloak/pull/9))
+- unit tests are now working from 21 to 25. ([#7](https://github.com/qvest-digital/terraform-provider-keycloak/pull/7))
+	- Please check IdP provider sync mode as the default has changed to "LEGACY"
+	- Keycloak 25: SAML clients have a default 'saml_organization'. If 'saml_organization' isn't specified in the provider configuration, the provider will delete this scope.
+
+
+## 4.5.0 (December 6, 2024)
+
+IMPROVEMENTS:
+
+- various dependency and readme updates ([#1014](https://github.com/keycloak/terraform-provider-keycloak/pull/1014), [#1015](https://github.com/keycloak/terraform-provider-keycloak/pull/1015), [#1022](https://github.com/keycloak/terraform-provider-keycloak/pull/1022), [#1024](https://github.com/keycloak/terraform-provider-keycloak/pull/1024))
+- move to the Keycloak organization ([#1017](https://github.com/keycloak/terraform-provider-keycloak/pull/1017))
+- update go to 1.22 ([#1013](https://github.com/keycloak/terraform-provider-keycloak/pull/1013))
+- update license for project to Apache 2.0 [#1002](https://github.com/keycloak/terraform-provider-keycloak/pull/1002)
+
+Huge thanks to everybody supporting the license change to Apache 2.0!
+
+## 4.4.0 (January 8, 2024)
+
+FEATURES:
+
+- new resource: `keycloak_ldap_custom_mapper` ([#863](https://github.com/mrparkers/terraform-provider-keycloak/pull/863))
+
+IMPROVEMENTS:
+
+- add `provider_id` attribute to `keycloak_realm_keystore_rsa` resource ([#858](https://github.com/mrparkers/terraform-provider-keycloak/pull/858))
+- compute `extra_config` for client data sources ([#885](https://github.com/mrparkers/terraform-provider-keycloak/pull/885))
+- support updated RedHat SSO version strings ([#903](https://github.com/mrparkers/terraform-provider-keycloak/pull/903))
+- add `required_actions` attribute to `keycloak_user` resource ([#867](https://github.com/mrparkers/terraform-provider-keycloak/pull/867))
+- allow use of custom client authenticator types ([#845](https://github.com/mrparkers/terraform-provider-keycloak/pull/845))
+- allow users to set `referrer_policy` header within `security_defenses` for `keycloak_realm` resource ([#879](https://github.com/mrparkers/terraform-provider-keycloak/pull/879))
+
+BUG FIXES:
+
+- set the correct value for `identityProviderMapper` when using keycloak-oidc identity provider ([#850](https://github.com/mrparkers/terraform-provider-keycloak/pull/850))
+
+Huge thanks to all the individuals who have contributed towards this release:
+
+- [@NataliaKhodiakova](https://github.com/NataliaKhodiakova)
+- [@olivierboudet](https://github.com/olivierboudet)
+- [@guthypeter](https://github.com/guthypeter)
+- [@kherock](https://github.com/kherock)
+- [@smoehrle](https://github.com/smoehrle)
+- [@wombat](https://github.com/wombat)
+- [@scheying](https://github.com/scheying)
+- [@JackHartley](https://github.com/JackHartley)
+- [@stale-vegait](https://github.com/stale-vegait)
+- [@jrpedrianes](https://github.com/jrpedrianes)
+
 ## 4.3.1 (June 8, 2023)
 
 BUG FIXES:

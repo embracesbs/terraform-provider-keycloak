@@ -4,17 +4,16 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/imdario/mergo"
-	"github.com/mrparkers/terraform-provider-keycloak/keycloak/types"
 	"reflect"
 	"strings"
 
+	"dario.cat/mergo"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
-
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/customdiff"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
-	"github.com/mrparkers/terraform-provider-keycloak/keycloak"
+	"github.com/keycloak/terraform-provider-keycloak/keycloak"
+	"github.com/keycloak/terraform-provider-keycloak/keycloak/types"
 )
 
 var (
@@ -22,7 +21,6 @@ var (
 	keycloakOpenidClientAuthorizationPolicyEnforcementMode   = []string{"ENFORCING", "PERMISSIVE", "DISABLED"}
 	keycloakOpenidClientResourcePermissionDecisionStrategies = []string{"UNANIMOUS", "AFFIRMATIVE", "CONSENSUS"}
 	keycloakOpenidClientPkceCodeChallengeMethod              = []string{"", "plain", "S256"}
-	keycloakOpenidClientAuthenticatorTypes                   = []string{"client-secret", "client-jwt", "client-x509", "client-secret-jwt"}
 )
 
 func resourceKeycloakOpenidClient() *schema.Resource {
@@ -72,10 +70,10 @@ func resourceKeycloakOpenidClient() *schema.Resource {
 				Sensitive: true,
 			},
 			"client_authenticator_type": {
-				Type:         schema.TypeString,
-				Optional:     true,
-				ValidateFunc: validation.StringInSlice(keycloakOpenidClientAuthenticatorTypes, false),
-				Default:      "client-secret",
+				Type:     schema.TypeString,
+				Optional: true,
+				// No validation is performed since Keycloak plugins can register custom client authenticators
+				Default: "client-secret",
 			},
 			"standard_flow_enabled": {
 				Type:     schema.TypeBool,
@@ -571,6 +569,10 @@ func resourceKeycloakOpenidClientRead(ctx context.Context, data *schema.Resource
 	err = setOpenidClientData(ctx, keycloakClient, data, client)
 	if err != nil {
 		return diag.FromErr(err)
+	}
+
+	if _, ok := data.GetOk("import"); !ok {
+		data.Set("import", false)
 	}
 
 	return nil

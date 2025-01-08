@@ -25,6 +25,7 @@ type User struct {
 	Enabled             bool                `json:"enabled"`
 	Attributes          map[string][]string `json:"attributes"`
 	FederatedIdentities FederatedIdentities `json:"federatedIdentities"`
+	RequiredActions     []string            `json:"requiredActions"`
 }
 
 type PasswordCredentials struct {
@@ -35,15 +36,16 @@ type PasswordCredentials struct {
 
 func (keycloakClient *KeycloakClient) NewUser(ctx context.Context, user *User) error {
 	newUser := User{
-		Id:            user.Id,
-		RealmId:       user.RealmId,
-		Username:      user.Username,
-		Email:         user.Email,
-		EmailVerified: user.EmailVerified,
-		FirstName:     user.FirstName,
-		LastName:      user.LastName,
-		Enabled:       user.Enabled,
-		Attributes:    user.Attributes,
+		Id:              user.Id,
+		RealmId:         user.RealmId,
+		Username:        user.Username,
+		Email:           user.Email,
+		EmailVerified:   user.EmailVerified,
+		FirstName:       user.FirstName,
+		LastName:        user.LastName,
+		Enabled:         user.Enabled,
+		Attributes:      user.Attributes,
+		RequiredActions: user.RequiredActions,
 	}
 	_, location, err := keycloakClient.post(ctx, fmt.Sprintf("/realms/%s/users", user.RealmId), newUser)
 	if err != nil {
@@ -146,7 +148,7 @@ func (keycloakClient *KeycloakClient) GetUserByUsername(ctx context.Context, rea
 		return nil, err
 	}
 
-	// more than one user could be returned so we need to search through all of the results and return the correct one
+	// more than one user could be returned so we need to search through all results and return the correct one
 	// ex: foo and foo-user could both exist, but searching for "foo" will return both
 	for _, user := range users {
 		if user.Username == username {

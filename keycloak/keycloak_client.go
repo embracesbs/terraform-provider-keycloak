@@ -8,11 +8,12 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"net/http/cookiejar"
 	"net/url"
 	"os"
+	"regexp"
 	"strings"
 	"time"
 
@@ -143,7 +144,7 @@ func (keycloakClient *KeycloakClient) login(ctx context.Context) error {
 
 	defer accessTokenResponse.Body.Close()
 
-	body, _ := ioutil.ReadAll(accessTokenResponse.Body)
+	body, _ := io.ReadAll(accessTokenResponse.Body)
 
 	tflog.Debug(ctx, "Login response", map[string]interface{}{
 		"response": string(body),
@@ -167,6 +168,19 @@ func (keycloakClient *KeycloakClient) login(ctx context.Context) error {
 	serverVersion := info.SystemInfo.ServerVersion
 	if strings.Contains(serverVersion, ".GA") {
 		serverVersion = strings.ReplaceAll(info.SystemInfo.ServerVersion, ".GA", "")
+	} else {
+		regex, err := regexp.Compile(`\.redhat-\w+`)
+
+		if err != nil {
+			fmt.Println("Error compiling regex:", err)
+			return err
+		}
+
+		// Check if the pattern is found in serverVersion
+		if regex.MatchString(serverVersion) {
+			// Replace the matched pattern with an empty string
+			serverVersion = regex.ReplaceAllString(serverVersion, "")
+		}
 	}
 
 	v, err := version.NewVersion(serverVersion)
@@ -188,7 +202,7 @@ func (keycloakClient *KeycloakClient) login(ctx context.Context) error {
 	return nil
 }
 
-func (keycloakClient *KeycloakClient) refresh(ctx context.Context) error {
+func (keycloakClient *KeycloakClient) Refresh(ctx context.Context) error {
 	refreshTokenUrl := fmt.Sprintf(tokenUrl, keycloakClient.baseUrl, keycloakClient.realm)
 	refreshTokenData := keycloakClient.getAuthenticationFormData()
 
@@ -218,7 +232,7 @@ func (keycloakClient *KeycloakClient) refresh(ctx context.Context) error {
 
 	defer refreshTokenResponse.Body.Close()
 
-	body, _ := ioutil.ReadAll(refreshTokenResponse.Body)
+	body, _ := io.ReadAll(refreshTokenResponse.Body)
 
 	tflog.Debug(ctx, "Refresh response", map[string]interface{}{
 		"response": string(body),
@@ -306,7 +320,7 @@ func (keycloakClient *KeycloakClient) sendRequest(ctx context.Context, request *
 	}
 
 	if body != nil {
-		request.Body = ioutil.NopCloser(bytes.NewReader(body))
+		request.Body = io.NopCloser(bytes.NewReader(body))
 		requestLogArgs["body"] = string(body)
 	}
 
@@ -326,7 +340,7 @@ func (keycloakClient *KeycloakClient) sendRequest(ctx context.Context, request *
 			"status": response.Status,
 		})
 
-		err := keycloakClient.refresh(ctx)
+		err := keycloakClient.Refresh(ctx)
 		if err != nil {
 			return nil, "", fmt.Errorf("error refreshing credentials: %s", err)
 		}
@@ -334,7 +348,7 @@ func (keycloakClient *KeycloakClient) sendRequest(ctx context.Context, request *
 		keycloakClient.addRequestHeaders(request)
 
 		if body != nil {
-			request.Body = ioutil.NopCloser(bytes.NewReader(body))
+			request.Body = io.NopCloser(bytes.NewReader(body))
 		}
 		response, err = keycloakClient.httpClient.Do(request)
 		if err != nil {
@@ -344,7 +358,7 @@ func (keycloakClient *KeycloakClient) sendRequest(ctx context.Context, request *
 
 	defer response.Body.Close()
 
-	responseBody, err := ioutil.ReadAll(response.Body)
+	responseBody, err := io.ReadAll(response.Body)
 	if err != nil {
 		return nil, "", err
 	}

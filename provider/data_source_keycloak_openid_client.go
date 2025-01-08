@@ -5,7 +5,7 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-	"github.com/mrparkers/terraform-provider-keycloak/keycloak"
+	"github.com/keycloak/terraform-provider-keycloak/keycloak"
 )
 
 func dataSourceKeycloakOpenidClient() *schema.Resource {
@@ -250,6 +250,10 @@ func dataSourceKeycloakOpenidClientRead(ctx context.Context, data *schema.Resour
 	}
 
 	err = setOpenidClientData(ctx, keycloakClient, data, client)
+	if err != nil {
+		return diag.FromErr(err)
+	}
+	data.Set("extra_config", client.Attributes.ExtraConfig)
 
-	return diag.FromErr(err)
+	return nil
 }
